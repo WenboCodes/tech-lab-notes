@@ -1,0 +1,11 @@
+site_name: PTO Docs
+site_description: PTO intrinsic and IR notes
+docs_dir: docs
+theme:
+  name: material
+nav:
+  - 首页: README.md
+  - TROWMAX 分析: intrin-intro.md
+  - BinIntrinsic 设计: bin-intrinsic.md
+  - TBinOp 改造方案: pto-intrinsic-plan.md
+  - PTO IR 评审意见: pto-ir-api-comments.md
