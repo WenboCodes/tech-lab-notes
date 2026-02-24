@@ -166,25 +166,25 @@ In `pto.tile_buf` textual types used by `PTOAS/test`, the same concept is encode
 
 ---
 
-### 3.2 PipeEventType
+### 3.2 PipeEventKind
 
-Synchronization endpoint types used by `pto.record_event` and `pto.wait_event`. Lowering maps these operation categories to concrete hardware pipelines/events.
+Synchronization event kinds used by `pto.record_event` and `pto.wait_event`. Lowering maps these kinds to concrete hardware pipelines/events.
 
 | Value | Int | Description |
 |-------|-----|-------------|
-| `TLOAD` | 0 | Load from GM |
-| `TSTORE_ACC` | 1 | Store from accumulator |
-| `TSTORE_VEC` | 2 | Store from vector/UB |
-| `TMOV_M2L` | 3 | Move: MAT -> LEFT |
-| `TMOV_M2S` | 4 | Move: MAT -> scalar |
-| `TMOV_M2B` | 5 | Move: MAT -> BIAS |
-| `TMOV_M2V` | 6 | Move: MAT -> VEC |
-| `TMOV_V2M` | 7 | Move: VEC -> MAT |
-| `TMATMUL` | 8 | Matrix multiplication |
-| `TVEC` | 9 | Vector operation |
-| `TVECWAIT_EVENT` | 10 | Vector wait event |
+| `EVENT_LOAD_FROM_GM` | 0 | Load from GM |
+| `EVENT_STORE_FROM_ACC` | 1 | Store from accumulator |
+| `EVENT_STORE_FROM_VEC` | 2 | Store from vector/UB |
+| `EVENT_MOVE_MAT_TO_LEFT` | 3 | Move: MAT -> LEFT |
+| `EVENT_MOVE_MAT_TO_SCALAR` | 4 | Move: MAT -> scalar |
+| `EVENT_MOVE_MAT_TO_BIAS` | 5 | Move: MAT -> BIAS |
+| `EVENT_MOVE_MAT_TO_VEC` | 6 | Move: MAT -> VEC |
+| `EVENT_MOVE_VEC_TO_MAT` | 7 | Move: VEC -> MAT |
+| `EVENT_COMPUTE_MATMUL` | 8 | Matrix multiplication |
+| `EVENT_COMPUTE_VEC` | 9 | Vector operation |
+| `EVENT_VEC_WAITPOINT` | 10 | Vector wait event |
 
-**Attribute syntax:** `#pto.pipe_event_type<TLOAD>`
+**Attribute syntax:** `#pto.pipe_event_type<EVENT_LOAD_FROM_GM>`
 
 ---
 
@@ -4745,8 +4745,8 @@ record_event(src_op, dst_op, event_id)
 
 | Name | Type | Description |
 |------|------|-------------|
-| `src_op` | `PipeEventTypeAttr` | Source operation type |
-| `dst_op` | `PipeEventTypeAttr` | Destination operation type |
+| `src_op` | `PipeEventKindAttr` | Source operation type |
+| `dst_op` | `PipeEventKindAttr` | Destination operation type |
 | `event_id` | `EventAttr` | Event ID |
 
 **Results:** None.
@@ -4762,7 +4762,7 @@ record_event(src_op, dst_op, event_id)
 **Basic Example:**
 
 ```mlir
-pto.record_event [#pto.pipe_event_type<TLOAD>, #pto.pipe_event_type<TVEC>, #pto.event<EVENT_ID0>]
+pto.record_event [#pto.pipe_event_type<EVENT_LOAD_FROM_GM>, #pto.pipe_event_type<EVENT_COMPUTE_VEC>, #pto.event<EVENT_ID0>]
 ```
 
 ---
@@ -4781,8 +4781,8 @@ wait_event(src_op, dst_op, event_id)
 
 | Name | Type | Description |
 |------|------|-------------|
-| `src_op` | `PipeEventTypeAttr` | Source operation type |
-| `dst_op` | `PipeEventTypeAttr` | Destination operation type |
+| `src_op` | `PipeEventKindAttr` | Source operation type |
+| `dst_op` | `PipeEventKindAttr` | Destination operation type |
 | `event_id` | `EventAttr` | Event ID |
 
 **Results:** None.
@@ -4798,7 +4798,7 @@ wait_event(src_op, dst_op, event_id)
 **Basic Example:**
 
 ```mlir
-pto.wait_event [#pto.pipe_event_type<TLOAD>, #pto.pipe_event_type<TVEC>, #pto.event<EVENT_ID0>]
+pto.wait_event [#pto.pipe_event_type<EVENT_LOAD_FROM_GM>, #pto.pipe_event_type<EVENT_COMPUTE_VEC>, #pto.event<EVENT_ID0>]
 ```
 
 ---
