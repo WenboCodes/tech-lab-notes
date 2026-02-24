@@ -6,8 +6,7 @@
 
 1. [A3 版 TROWMAX 详细分析（面向小白到进阶）](./intrin-intro.md)
 2. [BinIntrinsic 设计与参数映射说明](./bin-intrinsic.md)
-3. [A2/A3 TBinOp 无循环 Intrinsic 化改造方案（含公开 Low-Level API）](./pto-intrinsic-plan.md)
-4. [PTO IR Reference](./pto-ir-manual.md)
+3. [PTO IR Reference](./pto-ir-manual.md)
 
 ## 说明
 

@@ -7,5 +7,4 @@ nav:
   - 首页: README.md
   - TROWMAX 分析: intrin-intro.md
   - BinIntrinsic 设计: bin-intrinsic.md
-  - TBinOp 改造方案: pto-intrinsic-plan.md
   - PTO IR Manual: pto-ir-manual.md
