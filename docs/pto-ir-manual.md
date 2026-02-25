@@ -236,7 +236,7 @@ Composite attribute and component enums for tile buffer configuration.
 
 ### 3.5 Layout
 
-Global tensor layout inference for [`tensor_view` (Section 2.3)](#23-ptotensor_viewd0-x-d1-x-elementtype)/[`partition_tensor_view` (Section 2.4)](#24-ptopartition_tensor_viewd0-x-d1-x-elementtype). Tile buffers additionally use **Tile Buf config** (see 3.4) to describe physical/fractal layout.
+Global tensor layout inference for [`tensor_view`](#23-ptotensor_viewd0-x-d1-x-elementtype)/[`partition_tensor_view`](#24-ptopartition_tensor_viewd0-x-d1-x-elementtype). Tile buffers additionally use **Tile Buf config** (see 3.4) to describe physical/fractal layout.
 
 | Value | Int | Mnemonic | Description |
 |-------|-----|----------|-------------|
