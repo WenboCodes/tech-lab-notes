@@ -1,7 +1,5 @@
 site_name: PTO Docs
 site_description: PTO intrinsic and IR notes
-repo_url: https://github.com/WenboCodes/tech-lab-notes
-repo_name: WenboCodes/tech-lab-notes
 docs_dir: docs
 theme:
   name: material
