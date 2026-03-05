@@ -6,5 +6,6 @@ theme:
 nav:
   - 首页: README.md
   - VecTile 设计: vectile-design.md
+  - VecReg 设计提案: vecreg-design-proposal.md
   - vbrcb 指令指南: vbrcb-instruction-guide.md
   - PTO IR Manual: pto-ir-manual.md
