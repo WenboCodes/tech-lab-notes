@@ -4,12 +4,10 @@
 
 ## 文档导航
 
-1. [A3 版 TROWMAX 详细分析（面向小白到进阶）](./intrin-intro.md)
-2. [BinIntrinsic 设计与参数映射说明](./bin-intrinsic.md)
-3. [A2/A3 TBinOp 无循环 Intrinsic 化改造方案（含公开 Low-Level API）](./pto-intrinsic-plan.md)
-4. [PTO IR Reference](./pto-ir-manual.md)
+1. [A2/A3 VecTile 设计文档](./vectile-design.md)
+2. [vbrcb 指令详细使用指南](./vbrcb-instruction-guide.md)
+3. [PTO IR Reference](./pto-ir-manual.md)
 
 ## 说明
 
-- 原始文件仍保留在 `/home/sunwenbo/tmp` 根目录。
-- 本目录下文件命名已统一为小写 + 连字符，便于链接与 URL 使用。
+- 本目录下文件命名采用小写 kebab-case，便于链接与 URL 使用。
