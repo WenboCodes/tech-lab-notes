@@ -1,8 +1,18 @@
 site_name: PTO Docs
 site_description: PTO intrinsic and IR notes
+repo_url: https://github.com/WenboCodes/tech-lab-notes
+repo_name: WenboCodes/tech-lab-notes
 docs_dir: docs
 theme:
   name: material
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+extra_css:
+  - stylesheets/extra.css
 nav:
   - 首页: README.md
   - VecTile 设计: vectile-design.md

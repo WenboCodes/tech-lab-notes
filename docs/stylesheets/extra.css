@@ -1,0 +1,33 @@
+/* Extra styling for the homepage ("docs/README.md").
+ *
+ * Keep changes scoped: don't restyle global typography aggressively.
+ */
+
+.home-hero {
+  padding: 1.2rem 1.4rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background:
+    radial-gradient(1100px circle at 8% 10%, rgba(56, 189, 248, 0.18), transparent 45%),
+    radial-gradient(900px circle at 92% 20%, rgba(16, 185, 129, 0.14), transparent 42%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.03));
+}
+
+.home-hero p {
+  margin: 0.4rem 0 0.9rem;
+  font-size: 0.95rem;
+}
+
+.home-hero .md-button {
+  margin-right: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+[data-md-color-scheme="slate"] .home-hero {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(1100px circle at 8% 10%, rgba(56, 189, 248, 0.12), transparent 45%),
+    radial-gradient(900px circle at 92% 20%, rgba(16, 185, 129, 0.10), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.18));
+}
+
