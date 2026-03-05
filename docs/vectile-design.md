@@ -398,10 +398,85 @@ Expand 输入
   -> 纯扩展: TRowExpand.hpp(vector_dup/vbrcb) 或 TColExpand.hpp(copy_ubuf_to_ubuf)
 ```
 
+#### 8.2.2.1 vbrcb 在行向广播中的关键作用 ⭐
+
+**问题背景**：实现 `dst[i,j] = src0[i,j] + src1[i]`（行向广播加法）
+
+- 硬件vadd指令不支持"每行用一个标量"
+- vadd的stride单位是32B块（8个FP32元素）
+- 需要将240个标量转换为适合vadd的格式
+
+**vbrcb的官方定义**：
+
+> 获取src中8个b16/b32元素，**将每个元素单独广播成一个32B的block**，然后将8个block连续写入dst。
+> - 对于b32（FP32）：每个元素广播为8个相同值（8×4B = 32B）
+> - 对于b16（FP16）：每个元素广播为16个相同值（16×2B = 32B）
+
+**转换过程示例（FP32）**：
+
+```
+输入 src1（240个标量）：
+[a0, a1, a2, a3, a4, a5, a6, a7, a8, ..., a239]
+
+vbrcb(tmpPtr, src1, 1, 8, 30);  // 30个repeat
+
+Repeat 0 (src1[0:7]):
+  a0 → [a0, a0, a0, a0, a0, a0, a0, a0]  (32B block)
+  a1 → [a1, a1, a1, a1, a1, a1, a1, a1]  (32B block)
+  ...
+  a7 → [a7, a7, a7, a7, a7, a7, a7, a7]  (32B block)
+  → tmpPtr[0:63]
+
+Repeat 1 (src1[8:15]):
+  a8 → [a8×8], a9 → [a9×8], ..., a15 → [a15×8]
+  → tmpPtr[64:127]
+
+...
+
+总计：240个标量 → 1920个元素（240 × 8）
+```
+
+**tmpPtr的内存布局**：
+
+```
+偏移0-7:    [a0, a0, a0, a0, a0, a0, a0, a0]   ← a0的block
+偏移8-15:   [a1, a1, a1, a1, a1, a1, a1, a1]   ← a1的block
+偏移16-23:  [a2, a2, a2, a2, a2, a2, a2, a2]   ← a2的block
+...
+偏移56-63:  [a7, a7, a7, a7, a7, a7, a7, a7]   ← a7的block
+偏移64-71:  [a8, a8, a8, a8, a8, a8, a8, a8]   ← a8的block
+...
+```
+
+**vadd如何使用tmpPtr**：
+
+```
+vadd(dst, src0, tmpPtr, rpt=240, ..., src1_rep_stride=1)
+
+Repeat 0: 读取tmpPtr[0:7] = [a0×8]，使用a0广播到第0行64列
+Repeat 1: 读取tmpPtr[8:15] = [a1×8]，使用a1广播到第1行64列
+...
+Repeat 239: 读取tmpPtr[1912:1919] = [a239×8]，使用a239广播到第239行64列
+```
+
+**为什么需要vbrcb？**
+
+1. **硬件限制**：vadd的stride单位是32B块，最小步进是8个FP32元素
+2. **完美适配**：vbrcb将每个标量扩展为一个32B块（8个相同值）
+3. **stride对齐**：vadd每次前进8个元素（1个32B块），读取到的8个元素都相同
+4. **实现行向广播**：每行使用一个标量，完美实现 `dst[i,:] = src0[i,:] + src1[i]`
+
+**关键理解**：vbrcb是**元素级广播**，不是块级重复！
+- ❌ 错误：`[a0, a1, a2, a3, a4, a5, a6, a7]` 整体重复8次
+- ✅ 正确：每个元素单独广播为一个32B block
+
 #### 8.2.3 编程约束差异
 
-1. **算术 Expand 约束**：`TRowExpandBinOp` 在 `repeatStrideOverflow` 或“列向 repeat 开销大于按行 count”时优先切到 count-mode。
+1. **算术 Expand 约束**：`TRowExpandBinOp` 在 `repeatStrideOverflow` 或”列向 repeat 开销大于按行 count”时优先切到 count-mode。
 2. 非 row-major 的广播输入会进入 `vbrcb` 预展开分支（使用 tmp UB）。
+   - **vbrcb作用**：将每个标量扩展为一个32B block（8个相同值），使得vadd可以以32B为单位步进
+   - **内存需求**：8KB临时UB，可存放32个repeat（每个repeat 256B）
+   - **分批处理**：通常每批处理30个repeat（240行），避免临时UB溢出
 3. `TColExpandBinOp` 在连续场景走 norm-mode，非连续场景按行循环走 count-mode。
 4. **纯扩展约束**：`TRowExpand.hpp` 的广播快路径依赖静态 shape 与 dtype（b16/b32）条件。
 5. `TColExpand.hpp` 要求输入输出 ND row-major 且 `SrcValidCol == DstValidCol`。
